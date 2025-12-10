@@ -3,6 +3,11 @@ import Favicon from 'react-favicon'
 import { products } from '../../startingCode/data/products'
 import { Header } from '../Components/Header'
 export function HomePage() {
+  fetch('http://localhost:3000/api/products').then((response) => {
+    response.json().then((products) => {
+      console.log(products)
+    })
+  })
   return (
     <>
       <Favicon url='/home-favicon.png'></Favicon>
@@ -21,12 +26,11 @@ export function HomePage() {
                 <div className='product-name limit-text-to-2-lines'>{product.name}</div>
 
                 <div className='product-rating-container'>
-                  {console.log(String(product.rating.stars).replace('.', ''))}
                   <img className='product-rating-stars' src={`images/ratings/rating-${String(product.rating.stars).replace('.', '')}.png`} />
                   <div className='product-rating-count link-primary'>{product.rating.count}</div>
                 </div>
 
-                <div className='product-price'>{product.priceCents}</div>
+                <div className='product-price'>${(product.priceCents / 100).toFixed(2)}</div>
 
                 <div className='product-quantity-container'>
                   <select>
