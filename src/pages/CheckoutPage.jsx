@@ -1,9 +1,11 @@
 import './CheckoutPage.css'
 import './checkout-header.css'
 import { Link } from 'react-router'
+import Favicon from 'react-favicon'
 export function CheckoutPage() {
   return (
     <>
+      <Favicon url='cart-favicon.png' />
       <title>Checkout</title>
       <div className='checkout-header'>
         <div className='header-content'>

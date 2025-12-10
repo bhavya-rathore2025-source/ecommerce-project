@@ -1,8 +1,10 @@
 import './OrdersPage.css'
 import { Header } from '../Components/Header'
+import Favicon from 'react-favicon'
 export function OrdersPage() {
   return (
     <>
+      <Favicon url='orders-favicon.png' />
       <title>Orders</title>
       <Header />
 
