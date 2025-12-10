@@ -1,13 +1,17 @@
 import './HomePage.css'
+import axios from 'axios'
 import Favicon from 'react-favicon'
-import { products } from '../../startingCode/data/products'
+
 import { Header } from '../Components/Header'
+import { useEffect, useState } from 'react'
 export function HomePage() {
-  fetch('http://localhost:3000/api/products').then((response) => {
-    response.json().then((products) => {
-      console.log(products)
+  const [products, setProducts] = useState([])
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/products').then((response) => {
+      setProducts(response.data)
     })
-  })
+  }, [])
+
   return (
     <>
       <Favicon url='/home-favicon.png'></Favicon>
