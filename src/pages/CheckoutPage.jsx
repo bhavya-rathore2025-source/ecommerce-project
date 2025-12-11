@@ -5,15 +5,19 @@ import Favicon from 'react-favicon'
 import axios from 'axios'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
+import { formatMoney } from './utils/formatMoney'
+
 export function CheckoutPage({ cart }) {
-  console.log(cart)
+  const [paymentSummary, setPaymentSummary] = useState(null)
   const [deliveryOptions, setDeliveryOptions] = useState([])
   useEffect(() => {
     axios.get('http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime').then((response) => {
       setDeliveryOptions(response.data)
     })
+    axios.get('http://localhost:3000/api/payment-summary').then((response) => {
+      setPaymentSummary(response.data)
+    })
   }, [])
-  console.log(deliveryOptions)
 
   return (
     <>
@@ -48,9 +52,14 @@ export function CheckoutPage({ cart }) {
         <div className='checkout-grid'>
           <div className='order-summary'>
             {cart.map((cartItem) => {
+              const deliveryDate = deliveryOptions.find((option) => {
+                return option.id === cartItem.deliveryOptionId
+              })
+              console.log(paymentSummary)
+              console.log(deliveryOptions)
               return (
                 <div key={cartItem.id} className='cart-item-container'>
-                  <div className='delivery-date'>Delivery date: Tuesday, June 21</div>
+                  <div className='delivery-date'>Delivery date: {dayjs(deliveryDate.estimatedDeliveryTimeMs).format('dddd ,MMMM D')}</div>
 
                   <div className='cart-item-details-grid'>
                     <img className='product-image' src={cartItem.product.image} />
@@ -70,11 +79,14 @@ export function CheckoutPage({ cart }) {
                     <div className='delivery-options'>
                       <div className='delivery-options-title'>Choose a delivery option:</div>
                       {deliveryOptions.map((option) => {
-                        console.log(option)
-
                         return (
                           <div key={option.id} className='delivery-option'>
-                            <input type='radio' checked className='delivery-option-input' name={`delivery-option-${cartItem.id}`} />
+                            <input
+                              type='radio'
+                              checked={option.id === cartItem.deliveryOptionId}
+                              className='delivery-option-input'
+                              name={`delivery-option-${cartItem.id}`}
+                            />
                             <div>
                               <div className='delivery-option-date'>{dayjs(option.estimatedDeliveryTimeMs).format('dddd ,MMMM D')}</div>
                               <div className='delivery-option-price'>
@@ -95,18 +107,18 @@ export function CheckoutPage({ cart }) {
             <div className='payment-summary-title'>Payment Summary</div>
 
             <div className='payment-summary-row'>
-              <div>Items (3):</div>
-              <div className='payment-summary-money'>$42.75</div>
+              <div>Items ({paymentSummary.totalItems}):</div>
+              <div className='payment-summary-money'>${formatMoney(paymentSummary.productCostCents)}</div>
             </div>
 
             <div className='payment-summary-row'>
               <div>Shipping &amp; handling:</div>
-              <div className='payment-summary-money'>$4.99</div>
+              <div className='payment-summary-money'>${formatMoney(paymentSummary.shippingCostCents)}</div>
             </div>
 
             <div className='payment-summary-row subtotal-row'>
               <div>Total before tax:</div>
-              <div className='payment-summary-money'>$47.74</div>
+              <div className='payment-summary-money'>${formatMoney()}</div>
             </div>
 
             <div className='payment-summary-row'>
