@@ -55,8 +55,7 @@ export function CheckoutPage({ cart }) {
               const deliveryDate = deliveryOptions.find((option) => {
                 return option.id === cartItem.deliveryOptionId
               })
-              console.log(paymentSummary)
-              console.log(deliveryOptions)
+
               return (
                 <div key={cartItem.id} className='cart-item-container'>
                   <div className='delivery-date'>Delivery date: {dayjs(deliveryDate.estimatedDeliveryTimeMs).format('dddd ,MMMM D')}</div>
