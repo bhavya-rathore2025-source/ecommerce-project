@@ -7,10 +7,10 @@ import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
 import { formatMoney } from './utils/formatMoney'
 
-export function CheckoutPage({ cart }) {
+export function CheckoutPage({ cart, loadAppData }) {
   const [paymentSummary, setPaymentSummary] = useState(null)
   const [deliveryOptions, setDeliveryOptions] = useState([])
-
+  console.log('Reloaded')
   useEffect(() => {
     const fetchCheckout = async () => {
       let response = await axios.get('http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime')
@@ -19,7 +19,7 @@ export function CheckoutPage({ cart }) {
       setPaymentSummary(response.data)
     }
     fetchCheckout()
-  }, [])
+  }, [cart])
   /*
   console.log('deliveryoption', deliveryOptions)
   console.log('PaymentSummary', paymentSummary)
@@ -41,7 +41,7 @@ export function CheckoutPage({ cart }) {
           <div className='checkout-header-middle-section'>
             Checkout (
             <Link className='return-to-home-link' to='/'>
-              3 items
+              {paymentSummary && paymentSummary.totalItems} items
             </Link>
             )
           </div>
@@ -55,13 +55,18 @@ export function CheckoutPage({ cart }) {
       <div className='checkout-page'>
         <div className='page-title'>Review your order</div>
 
-        {deliveryOptions.length > 0 && paymentSummary && (
+        {deliveryOptions.length > 0 && (
           <div className='checkout-grid'>
             <div className='order-summary'>
               {cart.map((cartItem) => {
                 const deliveryDate = deliveryOptions.find((option) => {
                   return option.id === cartItem.deliveryOptionId
                 })
+
+                const deleteItem = async () => {
+                  await axios.delete(`http://localhost:3000/api/cart-items/${cartItem.productId}`)
+                  await loadAppData()
+                }
 
                 return (
                   <div key={cartItem.id} className='cart-item-container'>
@@ -80,18 +85,27 @@ export function CheckoutPage({ cart }) {
                             Quantity: <span className='quantity-label'>{cartItem.quantity}</span>
                           </span>
                           <span className='update-quantity-link link-primary'>Update</span>
-                          <span className='delete-quantity-link link-primary'>Delete</span>
+                          <span className='delete-quantity-link link-primary' onClick={deleteItem}>
+                            Delete
+                          </span>
                         </div>
                       </div>
 
                       <div className='delivery-options'>
                         <div className='delivery-options-title'>Choose a delivery option:</div>
                         {deliveryOptions.map((option) => {
+                          const updateOption = async () => {
+                            await axios.put(`http://localhost:3000/api/cart-items/${cartItem.productId}`, {
+                              deliveryOptionId: option.id,
+                            })
+                            await loadAppData()
+                          }
                           return (
-                            <div key={option.id} className='delivery-option'>
+                            <div key={option.id} className='delivery-option' onClick={updateOption}>
                               <input
                                 type='radio'
                                 checked={option.id === cartItem.deliveryOptionId}
+                                onChange={() => {}}
                                 className='delivery-option-input'
                                 name={`delivery-option-${cartItem.id}`}
                               />

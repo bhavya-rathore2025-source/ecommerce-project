@@ -10,7 +10,6 @@ export function HomePage({ cart, loadAppData }) {
   function bringQuantity(q) {
     setQuantityFromProducts(q)
   }
-  function AddToCart() {}
 
   useEffect(() => {
     const getHomeData = async () => {
