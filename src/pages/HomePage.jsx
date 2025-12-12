@@ -13,7 +13,7 @@ export function HomePage({ cart, loadAppData }) {
 
   useEffect(() => {
     const getHomeData = async () => {
-      const response = await axios.get('http://localhost:3000/api/products')
+      const response = await axios.get('api/products')
       setProducts(response.data)
     }
     getHomeData()
@@ -55,7 +55,7 @@ export function HomePage({ cart, loadAppData }) {
                 <button
                   className='add-to-cart-button button-primary'
                   onClick={async () => {
-                    await axios.post('http://localhost:3000/api/cart-items', {
+                    await axios.post('api/cart-items', {
                       productId: product.id,
                       quantity: quantityFromProducts,
                     })

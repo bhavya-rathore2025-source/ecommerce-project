@@ -12,26 +12,21 @@ export function CheckoutPage({ cart, loadAppData }) {
   const [paymentSummary, setPaymentSummary] = useState(null)
   const [deliveryOptions, setDeliveryOptions] = useState([])
   const navigate = useNavigate()
-  console.log('Reloaded')
   useEffect(() => {
     const fetchCheckout = async () => {
-      let response = await axios.get('http://localhost:3000/api/delivery-options?expand=estimatedDeliveryTime')
+      let response = await axios.get('api/delivery-options?expand=estimatedDeliveryTime')
       setDeliveryOptions(response.data)
-      response = await axios.get('http://localhost:3000/api/payment-summary')
+      response = await axios.get('api/payment-summary')
       setPaymentSummary(response.data)
     }
     fetchCheckout()
   }, [cart])
   const createOrder = async () => {
-    await axios.post('http://localhost:3000/api/orders')
+    await axios.post('api/orders')
     await loadAppData()
     navigate('http://localhost:5173/orders')
   }
-  /*
-  console.log('deliveryoption', deliveryOptions)
-  console.log('PaymentSummary', paymentSummary)
-  console.log('cart', cart)
-*/
+
   return (
     <>
       <Favicon url='cart-favicon.png' />
@@ -71,7 +66,7 @@ export function CheckoutPage({ cart, loadAppData }) {
                 })
 
                 const deleteItem = async () => {
-                  await axios.delete(`http://localhost:3000/api/cart-items/${cartItem.productId}`)
+                  await axios.delete(`api/cart-items/${cartItem.productId}`)
                   await loadAppData()
                 }
 
@@ -102,7 +97,7 @@ export function CheckoutPage({ cart, loadAppData }) {
                         <div className='delivery-options-title'>Choose a delivery option:</div>
                         {deliveryOptions.map((option) => {
                           const updateOption = async () => {
-                            await axios.put(`http://localhost:3000/api/cart-items/${cartItem.productId}`, {
+                            await axios.put(`api/cart-items/${cartItem.productId}`, {
                               deliveryOptionId: option.id,
                             })
                             await loadAppData()
