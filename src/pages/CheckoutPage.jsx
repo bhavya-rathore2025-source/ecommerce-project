@@ -6,10 +6,12 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import { useState, useEffect } from 'react'
 import { formatMoney } from './utils/formatMoney'
+import { useNavigate } from 'react-router'
 
 export function CheckoutPage({ cart, loadAppData }) {
   const [paymentSummary, setPaymentSummary] = useState(null)
   const [deliveryOptions, setDeliveryOptions] = useState([])
+  const navigate = useNavigate()
   console.log('Reloaded')
   useEffect(() => {
     const fetchCheckout = async () => {
@@ -20,6 +22,11 @@ export function CheckoutPage({ cart, loadAppData }) {
     }
     fetchCheckout()
   }, [cart])
+  const createOrder = async () => {
+    await axios.post('http://localhost:3000/api/orders')
+    await loadAppData()
+    navigate('http://localhost:5173/orders')
+  }
   /*
   console.log('deliveryoption', deliveryOptions)
   console.log('PaymentSummary', paymentSummary)
@@ -154,7 +161,9 @@ export function CheckoutPage({ cart, loadAppData }) {
                     <div className='payment-summary-money'>${formatMoney(paymentSummary.totalCostCents)}</div>
                   </div>
 
-                  <button className='place-order-button button-primary'>Place your order</button>
+                  <button className='place-order-button button-primary' onClick={createOrder}>
+                    Place your order
+                  </button>
                 </>
               )}
             </div>
