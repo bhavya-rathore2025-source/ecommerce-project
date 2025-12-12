@@ -1,5 +1,5 @@
 import './App.css'
-import { Routes, Route } from 'react-router'
+import { Routes, Route } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
 import { CheckoutPage } from './pages/CheckoutPage'
 import { OrdersPage } from './pages/OrdersPage'
@@ -10,10 +10,13 @@ import axios from 'axios'
 function App() {
   const [cart, setCart] = useState([])
   useEffect(() => {
-    axios.get('http://localhost:3000/api/cart-items?expand=product').then((response) => {
+    const fetchAppData = async () => {
+      const response = await axios.get('http://localhost:3000/api/cart-items?expand=product')
       setCart(response.data)
-    })
+    }
+    fetchAppData()
   }, [])
+
   return (
     <Routes>
       <Route path='/' element={<HomePage cart={cart} />} />
