@@ -1,11 +1,17 @@
 import './HomePage.css'
 import axios from 'axios'
 import Favicon from 'react-favicon'
-
+import { HomeProducts } from './HomeProducts'
 import { Header } from '../Components/Header'
 import { useEffect, useState } from 'react'
-export function HomePage({ cart }) {
+export function HomePage({ cart, loadAppData }) {
+  const [quantityFromProducts, setQuantityFromProducts] = useState(1)
   const [products, setProducts] = useState([])
+  function bringQuantity(q) {
+    setQuantityFromProducts(q)
+  }
+  function AddToCart() {}
+
   useEffect(() => {
     const getHomeData = async () => {
       const response = await axios.get('http://localhost:3000/api/products')
@@ -13,7 +19,6 @@ export function HomePage({ cart }) {
     }
     getHomeData()
   }, [])
-  console.log('products', products)
 
   return (
     <>
@@ -39,20 +44,7 @@ export function HomePage({ cart }) {
 
                 <div className='product-price'>${(product.priceCents / 100).toFixed(2)}</div>
 
-                <div className='product-quantity-container'>
-                  <select>
-                    <option value='1'>1</option>
-                    <option value='2'>2</option>
-                    <option value='3'>3</option>
-                    <option value='4'>4</option>
-                    <option value='5'>5</option>
-                    <option value='6'>6</option>
-                    <option value='7'>7</option>
-                    <option value='8'>8</option>
-                    <option value='9'>9</option>
-                    <option value='10'>10</option>
-                  </select>
-                </div>
+                <HomeProducts bringQuantity={bringQuantity} />
 
                 <div className='product-spacer'></div>
 
@@ -61,7 +53,18 @@ export function HomePage({ cart }) {
                   Added
                 </div>
 
-                <button className='add-to-cart-button button-primary'>Add to Cart</button>
+                <button
+                  className='add-to-cart-button button-primary'
+                  onClick={async () => {
+                    await axios.post('http://localhost:3000/api/cart-items', {
+                      productId: product.id,
+                      quantity: quantityFromProducts,
+                    })
+                    await loadAppData()
+                    console.log(quantityFromProducts)
+                  }}>
+                  Add to Cart
+                </button>
               </div>
             )
           })}
