@@ -4,14 +4,24 @@ import { Link } from 'react-router'
 import Favicon from 'react-favicon'
 import axios from 'axios'
 import dayjs from 'dayjs'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { formatMoney } from './utils/formatMoney'
 import { useNavigate } from 'react-router'
+import { HomeProducts } from './HomeProducts'
 
 export function CheckoutPage({ cart, loadAppData, fetchOrder }) {
   const [paymentSummary, setPaymentSummary] = useState(null)
   const [deliveryOptions, setDeliveryOptions] = useState([])
   const navigate = useNavigate()
+  const updateQ = useRef(null)
+  const [showInput, setShowInput] = useState(false)
+  const UpdateQuantity = async (id) => {
+    await axios.put(`/api/cart-items/${id}`, {
+      quantity: Number(updateQ.current.value),
+    })
+    await loadAppData()
+    setShowInput(false)
+  }
   useEffect(() => {
     const fetchCheckout = async () => {
       let response = await axios.get('api/delivery-options?expand=estimatedDeliveryTime')
@@ -87,7 +97,14 @@ export function CheckoutPage({ cart, loadAppData, fetchOrder }) {
                           <span>
                             Quantity: <span className='quantity-label'>{cartItem.quantity}</span>
                           </span>
-                          <span className='update-quantity-link link-primary'>Update</span>
+                          {showInput && <input className='update-input' ref={updateQ} />}
+                          <span
+                            className='update-quantity-link link-primary'
+                            onClick={() => {
+                              showInput ? UpdateQuantity(cartItem.productId) : setShowInput(true)
+                            }}>
+                            Update
+                          </span>
                           <span className='delete-quantity-link link-primary' onClick={deleteItem}>
                             Delete
                           </span>

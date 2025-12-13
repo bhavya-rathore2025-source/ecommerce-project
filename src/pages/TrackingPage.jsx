@@ -9,14 +9,12 @@ export function TrackingPage({ cart, orders }) {
   console.log(matchedOrder)
 
   function getDeliveryProgress(prd) {
-    console.log(prd.estimatedDeliveryTimeMs)
-
     const totalDeliveryTimeMs = prd.estimatedDeliveryTimeMs - matchedOrder.orderTimeMs
 
     const timePassedMs = dayjs().valueOf() - matchedOrder.orderTimeMs
-    console.log('value', dayjs().valueOf())
 
     let progress = (timePassedMs / totalDeliveryTimeMs) * 100
+    console.log(progress)
 
     if (progress > 100) {
       progress = 100
@@ -52,7 +50,7 @@ export function TrackingPage({ cart, orders }) {
 
             <div className='progress-bar-container'>
               {matchedProduct.estimatedDeliveryTimeMs && Date.now() > matchedProduct.estimatedDeliveryTimeMs}
-              <div className='progress-bar'></div>
+              <div className='progress-bar' style={{ width: `${getDeliveryProgress(matchedProduct)}%` }}></div>
             </div>
           </div>
         </div>

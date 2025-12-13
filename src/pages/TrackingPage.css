@@ -43,10 +43,6 @@
   margin-bottom: 15px;
 }
 
-.tracking-page .current-status {
-  color: rgb(25, 135, 84);
-}
-
 @media (max-width: 575px) {
   .tracking-page .progress-labels-container {
     font-size: 16px;
@@ -77,5 +73,4 @@
   height: 100%;
   background-color: rgb(25, 135, 84);
   border-radius: 50px;
-  width: 100%;
 }

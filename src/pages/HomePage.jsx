@@ -59,8 +59,13 @@ export function HomePage({ cart, loadAppData }) {
                       productId: product.id,
                       quantity: quantityFromProducts,
                     })
+                    {
+                      console.log(product.id)
+                    }
+                    {
+                      console.log(quantityFromProducts)
+                    }
                     await loadAppData()
-                    console.log(quantityFromProducts)
                   }}>
                   Add to Cart
                 </button>

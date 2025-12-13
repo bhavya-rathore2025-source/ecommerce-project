@@ -5,7 +5,8 @@ import { Fragment } from 'react'
 import { Header } from '../Components/Header'
 import Favicon from 'react-favicon'
 import { useNavigate } from 'react-router'
-export function OrdersPage({ cart, orders }) {
+import axios from 'axios'
+export function OrdersPage({ cart, orders, loadAppData }) {
   const navigate = useNavigate()
   const trackPak = (id) => {
     navigate(`http://localhost:5173/tracking/${id}`)
@@ -57,7 +58,24 @@ export function OrdersPage({ cart, orders }) {
                             <div className='product-quantity'>Quantity: {orderProduct.quantity}</div>
                             <button className='buy-again-button button-primary'>
                               <img className='buy-again-icon' src='images/icons/buy-again.png' />
-                              <span className='buy-again-message'>Add to Cart</span>
+                              <span
+                                className='buy-again-message'
+                                onClick={async () => {
+                                  {
+                                    console.log(order.id)
+                                  }
+                                  {
+                                    console.log(orderProduct.quantity)
+                                  }
+                                  await axios.post('api/cart-items', {
+                                    productId: order.id,
+                                    quantity: orderProduct.quantity,
+                                  })
+
+                                  await loadAppData()
+                                }}>
+                                Add to Cart
+                              </span>
                             </button>
                           </div>
 
