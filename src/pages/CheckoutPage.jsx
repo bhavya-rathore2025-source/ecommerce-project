@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { formatMoney } from './utils/formatMoney'
 import { useNavigate } from 'react-router'
 
-export function CheckoutPage({ cart, loadAppData }) {
+export function CheckoutPage({ cart, loadAppData, fetchOrder }) {
   const [paymentSummary, setPaymentSummary] = useState(null)
   const [deliveryOptions, setDeliveryOptions] = useState([])
   const navigate = useNavigate()
@@ -24,6 +24,7 @@ export function CheckoutPage({ cart, loadAppData }) {
   const createOrder = async () => {
     await axios.post('api/orders')
     await loadAppData()
+    await fetchOrder()
     navigate('http://localhost:5173/orders')
   }
 
